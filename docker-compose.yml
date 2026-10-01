@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.0
+    container_name: gestion-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - db-data:/var/lib/mysql
+    networks:
+      - devops-network
+
+  backend:
+    build: ./backend
+    container_name: gestion-backend
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/test_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8089:8080"
+    networks:
+      - devops-network
+
+  frontend:
+    build: ./frontend
+    container_name: gestion-frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+    networks:
+      - devops-network
+
+volumes:
+  db-data:
+
+networks:
+  devops-network:
+    driver: bridge
