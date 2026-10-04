@@ -33,9 +33,6 @@ pipeline {
                 dir('backend') {
                     sh 'mvn package -DskipTests'
                 }
-                dir('frontend') {
-                    sh 'npm install'
-                }
             }
         }
 
